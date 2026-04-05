@@ -19,6 +19,8 @@ async function bootstrap() {
     process.env.FRONTEND_URL,
   ].filter(Boolean) as string[];
 
+  console.log('📡 Allowed CORS Origins:', allowedOrigins);
+
   app.enableCors({
     origin: allowedOrigins,
     credentials: true,

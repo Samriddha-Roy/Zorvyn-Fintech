@@ -1,98 +1,131 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# 🌌 ZORVYN Backend: Financial Intelligence Core
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+[![NestJS](https://img.shields.io/badge/Framework-NestJS-E0234E?logo=nestjs&logoColor=white)](https://nestjs.com/)
+[![Prisma](https://img.shields.io/badge/ORM-Prisma-2D3748?logo=prisma&logoColor=white)](https://www.prisma.io/)
+[![PostgreSQL](https://img.shields.io/badge/Database-PostgreSQL-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+ZORVYN is a high-performance financial API core designed for secure transaction management and real-time analytical processing. Built with **NestJS** and **Prisma**, it provides a robust foundation for modern fintech ecosystems.
 
-## Description
+---
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 🚀 Live Environment
 
-## Project setup
+| Service | Access Link |
+| :--- | :--- |
+| **🌐 Live Demo** | [zorvyn-fintech-demo-production.up.railway.app](https://zorvyn-fintech-demo-production.up.railway.app) |
+| **📚 API Docs (Swagger)** | [zorvyn-fintech-production.up.railway.app/api/docs](https://zorvyn-fintech-production.up.railway.app/api/docs) |
+| **📡 Backend URL** | `https://zorvyn-fintech-production.up.railway.app` |
 
-```bash
-$ npm install
+---
+
+## 🏗️ System Architecture
+
+The project follows a modular NestJS architecture, ensuring high maintainability and clear separation of concerns.
+
+```text
+src/
+├── common/              # Cross-cutting concerns (Guards, Decorators, Filters)
+├── database/            # Prisma integration and driver adapters
+└── modules/
+    ├── auth/            # Identity & Access Management (JWT)
+    ├── users/           # User governance and Role-Based Access Control
+    ├── transactions/    # Financial ledger and aggregation logic
+    └── health/          # System telemetry and DB connectivity checks
 ```
 
-## Compile and run the project
+### Flow Architecture
+The following diagram illustrates the request lifecycle and component interaction within the ZORVYN ecosystem:
 
-```bash
-# development
-$ npm run start
+```mermaid
+graph TD
+    Client[User / Frontend] --- HTTP((HTTP/HTTPS))
+    HTTP --> Guard{Auth Guard}
+    
+    Guard -- Reject --> Error[401/403 Error]
+    Guard -- Accept --> Controller[Controller]
+    
+    subgraph "ZORVYN Core"
+    Controller --> Validation[DTO Validation]
+    Validation --> Service[Business Service]
+    Service --> Persistence[(Prisma / DB)]
+    end
+    
+    Persistence --> Service
+    Service --> Controller
+    Controller --> Response[JSON Response]
+    Response --> Client
 
-# watch mode
-$ npm run start:dev
+    %% Professional Color Palette
+    classDef default fill:#f8fafc,stroke:#1e293b,stroke-width:1px,color:#1e293b;
+    classDef security fill:#6366f1,stroke:#4338ca,stroke-width:2px,color:#fff;
+    classDef logic fill:#3b82f6,stroke:#1d4ed8,stroke-width:2px,color:#fff;
+    classDef storage fill:#10b981,stroke:#047857,stroke-width:2px,color:#fff;
+    classDef network fill:#94a3b8,stroke:#475569,stroke-width:1px,color:#fff;
 
-# production mode
-$ npm run start:prod
+    class Guard security;
+    class Service logic;
+    class Persistence storage;
+    class HTTP,Error,Response network;
 ```
 
-## Run tests
+---
+
+## 🔒 Core API Flows
+
+### 1. Identity & Authentication (`/auth`)
+Managed by a JWT-based security layer. On registration, users are assigned a default `VIEWER` role, which can be elevated to `ANALYST` or `ADMIN` via the User Management panel.
+
+### 2. Transaction Ledger (`/transactions`)
+The backbone of the platform. Supports full CRUD operations with high-precision decimal storage. Includes specialized analytical endpoints:
+- `GET /transactions/monthly-breakdown`: Computes income vs. expense trends.
+- `GET /transactions/global-analytics`: Provides platform-wide sums for elevated roles.
+
+### 3. Role-Based Access Control (RBAC)
+Architecture enforces strict permission boundaries:
+- **VIEWER**: Read-only summary access.
+- **ANALYST**: Access to detailed analytics and trend intelligence.
+- **ADMIN**: Full clearance including user role modification and record generation.
+
+---
+
+## 🛠️ Technical Configuration
+
+### Environment Variables
+Configure these in your `.env` or Railway settings:
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+DATABASE_URL=           # PostgreSQL connection string
+DIRECT_DATABASE_URL=    # PostgreSQL connection (for Prisma v7 pg-adapter)
+JWT_SECRET=             # High-entropy string for token signing
+FRONTEND_URL=           # The URL of your deployed frontend (for CORS)
 ```
 
-## Deployment
+### Local Development
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+1. **Install Dependencies**
+   ```bash
+   npm install
+   ```
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+2. **Initialize Database**
+   ```bash
+   npx prisma generate
+   npx prisma migrate dev
+   ```
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
+3. **Launch Server**
+   ```bash
+   npm run start:dev
+   ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+---
 
-## Resources
+## 🛡️ Telemetry & Monitoring
 
-Check out a few resources that may come in handy when working with NestJS:
+Deployments include a `/health` endpoint designed for Railway's monitoring. It performs real-time verification of the database pool status and schema availability.
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+> [!TIP]
+> Visit `/health` any time to confirm that the backend-to-database link is operational.
 
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+---

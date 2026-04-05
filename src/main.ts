@@ -13,10 +13,20 @@ async function bootstrap() {
   app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));
 
   // CORS — allow frontend origin
+  const rawOrigin = process.env.FRONTEND_URL;
+  let formattedOrigin = rawOrigin;
+  
+  if (formattedOrigin && !formattedOrigin.startsWith('http')) {
+    formattedOrigin = `https://${formattedOrigin}`;
+  }
+  if (formattedOrigin?.endsWith('/')) {
+    formattedOrigin = formattedOrigin.slice(0, -1);
+  }
+
   const allowedOrigins = [
     'http://localhost:3001',
     'http://localhost:3000',
-    process.env.FRONTEND_URL,
+    formattedOrigin,
   ].filter(Boolean) as string[];
 
   console.log('📡 Allowed CORS Origins:', allowedOrigins);

@@ -41,6 +41,12 @@ export declare class TransactionsController {
         expense: number;
         month: string;
     }[]>;
+    getGlobalAnalytics(): Promise<{
+        total: number;
+        income: number;
+        expense: number;
+        month: string;
+    }[]>;
     findOne(user: any, id: string): Promise<{
         type: import("@prisma/client").$Enums.TransactionType;
         id: string;

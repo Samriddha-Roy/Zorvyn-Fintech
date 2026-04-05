@@ -38,6 +38,9 @@ let TransactionsController = class TransactionsController {
     getMonthlyBreakdown(user) {
         return this.transactionsService.getMonthlyBreakdown(user.id);
     }
+    getGlobalAnalytics() {
+        return this.transactionsService.getGlobalAnalytics();
+    }
     findOne(user, id) {
         return this.transactionsService.findOne(user.id, id);
     }
@@ -54,9 +57,6 @@ __decorate([
     (0, roles_decorator_1.Roles)(client_1.UserRole.ADMIN),
     (0, swagger_1.ApiOperation)({ summary: 'Create a new transaction', description: 'Access: ADMIN only' }),
     (0, swagger_1.ApiResponse)({ status: 201, description: 'Transaction created successfully' }),
-    (0, swagger_1.ApiResponse)({ status: 400, description: 'Validation failed' }),
-    (0, swagger_1.ApiResponse)({ status: 401, description: 'Unauthorized' }),
-    (0, swagger_1.ApiResponse)({ status: 403, description: 'Forbidden: Admin access required' }),
     __param(0, (0, current_user_decorator_1.CurrentUser)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -68,8 +68,6 @@ __decorate([
     (0, roles_decorator_1.Roles)(client_1.UserRole.ANALYST, client_1.UserRole.ADMIN),
     (0, swagger_1.ApiOperation)({ summary: 'List transactions with optional filters', description: 'Access: ANALYST, ADMIN' }),
     (0, swagger_1.ApiResponse)({ status: 200, description: 'List of transactions with metadata' }),
-    (0, swagger_1.ApiResponse)({ status: 401, description: 'Unauthorized' }),
-    (0, swagger_1.ApiResponse)({ status: 403, description: 'Forbidden: Analyst/Admin access required' }),
     __param(0, (0, current_user_decorator_1.CurrentUser)()),
     __param(1, (0, common_1.Query)()),
     __metadata("design:type", Function),
@@ -81,21 +79,25 @@ __decorate([
     (0, roles_decorator_1.Roles)(client_1.UserRole.ANALYST, client_1.UserRole.ADMIN),
     (0, swagger_1.ApiOperation)({ summary: 'Get monthly income vs expense breakdown', description: 'Access: ANALYST, ADMIN' }),
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Monthly summary' }),
-    (0, swagger_1.ApiResponse)({ status: 401, description: 'Unauthorized' }),
-    (0, swagger_1.ApiResponse)({ status: 403, description: 'Forbidden: Analyst/Admin access required' }),
     __param(0, (0, current_user_decorator_1.CurrentUser)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], TransactionsController.prototype, "getMonthlyBreakdown", null);
 __decorate([
+    (0, common_1.Get)('global-analytics'),
+    (0, roles_decorator_1.Roles)(client_1.UserRole.ANALYST, client_1.UserRole.ADMIN),
+    (0, swagger_1.ApiOperation)({ summary: 'Get global platform analytics (anonymized financial sums only)', description: 'Access: ANALYST, ADMIN' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Global anonymized financial trends' }),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], TransactionsController.prototype, "getGlobalAnalytics", null);
+__decorate([
     (0, common_1.Get)(':id'),
     (0, roles_decorator_1.Roles)(client_1.UserRole.ANALYST, client_1.UserRole.ADMIN),
     (0, swagger_1.ApiOperation)({ summary: 'Get a single transaction by ID', description: 'Access: ANALYST, ADMIN' }),
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Detailed transaction object' }),
-    (0, swagger_1.ApiResponse)({ status: 401, description: 'Unauthorized' }),
-    (0, swagger_1.ApiResponse)({ status: 403, description: 'Forbidden: Analyst/Admin access required' }),
-    (0, swagger_1.ApiResponse)({ status: 404, description: 'Transaction not found' }),
     __param(0, (0, current_user_decorator_1.CurrentUser)()),
     __param(1, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
@@ -107,9 +109,6 @@ __decorate([
     (0, roles_decorator_1.Roles)(client_1.UserRole.ADMIN),
     (0, swagger_1.ApiOperation)({ summary: 'Update a transaction', description: 'Access: ADMIN only' }),
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Transaction updated successfully' }),
-    (0, swagger_1.ApiResponse)({ status: 401, description: 'Unauthorized' }),
-    (0, swagger_1.ApiResponse)({ status: 403, description: 'Forbidden: Admin access required' }),
-    (0, swagger_1.ApiResponse)({ status: 404, description: 'Transaction not found' }),
     __param(0, (0, current_user_decorator_1.CurrentUser)()),
     __param(1, (0, common_1.Param)('id')),
     __param(2, (0, common_1.Body)()),
@@ -123,9 +122,6 @@ __decorate([
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),
     (0, swagger_1.ApiOperation)({ summary: 'Delete a transaction', description: 'Access: ADMIN only' }),
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Transaction deleted successfully' }),
-    (0, swagger_1.ApiResponse)({ status: 401, description: 'Unauthorized' }),
-    (0, swagger_1.ApiResponse)({ status: 403, description: 'Forbidden: Admin access required' }),
-    (0, swagger_1.ApiResponse)({ status: 404, description: 'Transaction not found' }),
     __param(0, (0, current_user_decorator_1.CurrentUser)()),
     __param(1, (0, common_1.Param)('id')),
     __metadata("design:type", Function),

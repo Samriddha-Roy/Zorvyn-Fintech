@@ -38,9 +38,6 @@ export class TransactionsController {
   @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Create a new transaction', description: 'Access: ADMIN only' })
   @ApiResponse({ status: 201, description: 'Transaction created successfully' })
-  @ApiResponse({ status: 400, description: 'Validation failed' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
-  @ApiResponse({ status: 403, description: 'Forbidden: Admin access required' })
   create(@CurrentUser() user: any, @Body() dto: CreateTransactionDto) {
     return this.transactionsService.create(user.id, dto);
   }
@@ -49,8 +46,6 @@ export class TransactionsController {
   @Roles(UserRole.ANALYST, UserRole.ADMIN)
   @ApiOperation({ summary: 'List transactions with optional filters', description: 'Access: ANALYST, ADMIN' })
   @ApiResponse({ status: 200, description: 'List of transactions with metadata' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
-  @ApiResponse({ status: 403, description: 'Forbidden: Analyst/Admin access required' })
   findAll(@CurrentUser() user: any, @Query() query: QueryTransactionDto) {
     return this.transactionsService.findAll(user.id, query);
   }
@@ -59,19 +54,22 @@ export class TransactionsController {
   @Roles(UserRole.ANALYST, UserRole.ADMIN)
   @ApiOperation({ summary: 'Get monthly income vs expense breakdown', description: 'Access: ANALYST, ADMIN' })
   @ApiResponse({ status: 200, description: 'Monthly summary' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
-  @ApiResponse({ status: 403, description: 'Forbidden: Analyst/Admin access required' })
   getMonthlyBreakdown(@CurrentUser() user: any) {
     return this.transactionsService.getMonthlyBreakdown(user.id);
+  }
+
+  @Get('global-analytics')
+  @Roles(UserRole.ANALYST, UserRole.ADMIN)
+  @ApiOperation({ summary: 'Get global platform analytics (anonymized financial sums only)', description: 'Access: ANALYST, ADMIN' })
+  @ApiResponse({ status: 200, description: 'Global anonymized financial trends' })
+  getGlobalAnalytics() {
+    return this.transactionsService.getGlobalAnalytics();
   }
 
   @Get(':id')
   @Roles(UserRole.ANALYST, UserRole.ADMIN)
   @ApiOperation({ summary: 'Get a single transaction by ID', description: 'Access: ANALYST, ADMIN' })
   @ApiResponse({ status: 200, description: 'Detailed transaction object' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
-  @ApiResponse({ status: 403, description: 'Forbidden: Analyst/Admin access required' })
-  @ApiResponse({ status: 404, description: 'Transaction not found' })
   findOne(@CurrentUser() user: any, @Param('id') id: string) {
     return this.transactionsService.findOne(user.id, id);
   }
@@ -80,9 +78,6 @@ export class TransactionsController {
   @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Update a transaction', description: 'Access: ADMIN only' })
   @ApiResponse({ status: 200, description: 'Transaction updated successfully' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
-  @ApiResponse({ status: 403, description: 'Forbidden: Admin access required' })
-  @ApiResponse({ status: 404, description: 'Transaction not found' })
   update(
     @CurrentUser() user: any,
     @Param('id') id: string,
@@ -96,9 +91,6 @@ export class TransactionsController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Delete a transaction', description: 'Access: ADMIN only' })
   @ApiResponse({ status: 200, description: 'Transaction deleted successfully' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
-  @ApiResponse({ status: 403, description: 'Forbidden: Admin access required' })
-  @ApiResponse({ status: 404, description: 'Transaction not found' })
   remove(@CurrentUser() user: any, @Param('id') id: string) {
     return this.transactionsService.remove(user.id, id);
   }
